@@ -2,55 +2,34 @@ import os
 import numpy as np # linear algebra
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 import csv
+import seaborn as sns
+import matplotlib.pyplot as plt
 
-def test():
-    print("hey")
-    df = pd.read_csv('data.csv')
-    #print(df.head(n=10))
+def test_correlation():
+    df = pd.read_csv('data_formatted.csv')
+    corr = df.corr(method='pearson')
+    print(corr)
+    corr.pop('state')
 
-    #corr = df.corr(method='pearson')
-    #c = corr.head()
-    #print(c)
+    mask = np.zeros_like(corr, dtype=np.bool)
+    mask[np.triu_indices_from(mask)] = True
 
-    data = df[['word count','state']]
-    print(data)
-    corr = data.corr(method='pearson')
-    c = df['word count'].corr(df['state'])
-    print(c)
+    ax = sns.heatmap(
+        corr.loc[['state']], 
+        vmin=None, vmax=None, center=0,
+        cmap=sns.diverging_palette(255, 0, as_cmap=True),
+        square=True,
+    )
+    ax.set_xticklabels(
+        ax.get_xticklabels(),
+        rotation=35,
+        horizontalalignment='right'
+    )
+    ax.set_yticklabels(
+        ax.get_yticklabels(),
+        rotation=0
+    )
+    ax.set_title("Success (state) correlations")
+    plt.show()
 
-    # TODO: Convert successful = 0, failed = 1, canceled = 2
-
-def generate_formatted_csv():
-    #========== Read from raw csv file ==========#
-    raw_data = pd.read_csv('data.csv')
-    column_vals = raw_data.values
-
-    #========== Convert states to binary ==========#
-    states = raw_data['state'].values
-    word_count = raw_data['word count'].values
-
-    # canceled = 0, failed = 1, successful = 2
-    states_binary = []
-    for state in states:
-        if state == "canceled":
-            states_binary.append(0)
-        elif state == "failed":
-            states_binary.append(1)
-        elif state == "successful":
-            states_binary.append(2)
-
-    #========== Format raw data ==========#
-    formatted_states = states_binary
-    formatted_word_count = word_count.tolist()
-
-    formatted_combined = [formatted_states, formatted_word_count]
-
-    #========== Write new formatted csv file ==========#
-    f = open('data_formatted.csv', 'w')
-    writer = csv.writer(f)
-    writer.writerow(['state', 'word count'])
-    writer.writerow(np.transpose(formatted_combined)[0])
-
-    f.close()
-
-generate_formatted_csv()
+test_correlation()
