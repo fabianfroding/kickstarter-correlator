@@ -28,7 +28,7 @@ def format_csv(csv_file):
     formatted_transposed = np.transpose(formatted_combined)
 
     #========== Write new formatted csv file ==========#
-    f = open('data_formatted.csv', 'w')
+    f = open('data/data_formatted.csv', 'w')
     writer = csv.writer(f)
 
     # Write header
