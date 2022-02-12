@@ -6,7 +6,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 def test_correlation():
-    df = pd.read_csv('data_formatted.csv')
+    df = pd.read_csv('data/data_formatted.csv')
     corr = df.corr(method='pearson')
     print(corr)
     corr.pop('state')

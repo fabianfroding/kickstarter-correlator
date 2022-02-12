@@ -40,4 +40,4 @@ def format_csv(csv_file):
 
     f.close()
 
-format_csv('data.csv')
+format_csv('data/data.csv')
